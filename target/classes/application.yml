@@ -1,0 +1,10 @@
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+spring:
+  application:
+    name: solr
+  data:
+    solr:
+      host: http://127.0.0.1:8983/solr

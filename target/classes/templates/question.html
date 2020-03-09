@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的话题</title>
+    <link href="http://localhost:8080/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8080/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="http://localhost:8080/js/jquery-3.4.1.min.js"></script>
+    <script src="http://localhost:8080/js/cookie.js"></script>
+    <script src="http://localhost:8080/js/bootstrap.min.js" ></script>
+    <script src="http://localhost:8080/js/common.js"></script>
+    <link href="http://localhost:8080/css/local.css" rel="stylesheet">
+    <script src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+</head>
+<body>
+<div th:include="navgation :: nav"></div>
+<div class="main" style="float: left">
+    <div class="bgc-white">
+            <div class="row height100">
+                <div class="col-lg-9 question-padding" id="app">
+<!--                    文章开始-->
+                    <div>
+                        <div id="titleId" th:name="${article.getId()}">
+                            <h3>{{article.title}}
+                                <span class="text-color-999 text-font-size14 padding-left14">
+                                <spam v-if="tf">
+                                    <a v-bind:href="'http://localhost:8080/modify/'+article.id">修改文章</a>
+                                </spam>
+                            </span>
+                            </h3>
+                            <em class="text-color-999">作者：{{author.name}}|
+                                <span> 发布于2019年12月06日 |</span>
+                                <span> 阅读数：32</span>
+                                <hr>
+                            </em>
+                        </div>
+                        <div>
+                            {{article.description}}
+                        </div>
+                    </div>
+                    <hr>
+<!--                    文章结束-->
+<!--                    回答页面开始-->
+                    <div>
+                        <ul class="media-list" id="reply">
+
+                        </ul>
+                    </div>
+<!--                    这是回复栏-->
+                   <div v-if="textareaTf">
+                       <div class="panel panel-default" style="margin-right: 20%">
+                           <div class="panel-body">
+                               <h4>发表回复</h4>
+                               <div id="editor"></div>
+                               <input class="btn btn-default float-R" type="submit" onclick="replyAjax()" value="提交">
+                           </div>
+                       </div>
+                   </div>
+                </div >
+                <div class="col-lg-3" style="border-left:1px solid #0f0f0f;height: 300px;" id = "right">
+                    <div class="media font-contor">
+                        <div class="media-left media-middle">
+                                <img class="img-rounded media-ob" src="https://cn.vuejs.org/images/logo.png">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">发起人：{{author.name}}</h4>
+                            <span class="text-color-999">{{author.bio}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- 这是vue的js start -->
+<script th:inline="javascript">
+        var tf = [[${tf}]]
+        var coo = $.cookie('token');
+        var textareaTf = false;
+        if(coo!=null){
+            textareaTf = true;
+        }
+        var app = new Vue({
+            el:"#app",
+            data:{
+                article:[[${article}]],
+                author:[[${user}]],
+                tf:tf,
+                textareaTf:textareaTf
+            }
+        });
+        var right = new Vue({
+            el:"#right",
+            data:{
+                author:[[${user}]],
+            }
+        });
+</script>
+<!-- 这是vue的js end -->
+<!--这是富文本 start-->
+<script>
+    var E = window.wangEditor;
+    var editor = new E('#editor');
+    editor.customConfig.uploadImgServer = '/uploadImage';
+    editor.customConfig.showLinkImg = false;
+    //文件名称
+    editor.customConfig.uploadFileName='file';
+    editor.create();
+</script>
+<!--这是富文本 end-->
+<!--jqurey start-->
+<script>
+    $(function () {
+        replyInfo();
+    })
+    function replyInfo(page) {
+        var questionId = $("#titleId").attr("name");
+        $.ajax({
+            url:"/replyInfo",
+            dataType:"json",
+            data:{
+                "page":page,
+                "questionId":questionId
+            },
+            success:function (result) {
+                if(result.userList!=null&&result.userList!=""){
+                    fragmentReply(result);
+                    console.log("页面信息"+result.toString())
+                    paginationProduction(result.paginationDTO,"#reply",null);
+                }
+            }
+        });
+    }
+    function replyAjax() {
+        var desc = editor.txt.html();
+        var questionId =  $("#titleId").attr("name");
+        $.ajax({
+            url:"/reply",
+            dataType:"json",
+            data:{
+                "token":coo,
+                "description":desc,
+                "questionId":questionId,
+                "rank":"1",
+            },
+            success:function (result) {
+                Assemble(result)
+            }
+        });
+    }
+    // 回复
+    function Assemble(result) {
+        var addLi = '';
+        addLi+='<li class="media">'+
+            '<div class="media-left">'+
+            '<img class="img-rounded media-ob" src="https://cn.vuejs.org/images/logo.png" alt="..."></div>'+
+            '<div class="media-body">'+
+            '<a><h4 class="media-heading">'+result.user.name+':</h4></a>'+
+            '<p>'+result.reply.description+'</p>'+
+            '<div>'+
+            '<a class="glyphicon glyphicon-thumbs-up text-color-999">点赞 </a>'+
+            '<a class="glyphicon glyphicon-comment text-color-999" name = "'+result.reply.id+'" onclick="cliComment()"> 回复</a>'+
+            '<div class="collapse in" id="comment-'+result.reply.id+'">二级评论</div>'+
+            '</div></div></li>'+
+            '<hr>';
+        $("#reply:last-child").append(addLi);
+    }
+    function fragmentReply(result) {
+        if(result.userList!=null&&result!=""){
+            var addLi = '';
+            var reply = result.paginationDTO;
+            var users = result.userList;
+            $.each(users,function (index,obj) {
+                var id = result.paginationDTO.quesstionList[index].id;
+                var secondLevelBox = '<hr>'+
+                    '<div>' +
+                    '<textarea class="form-control" id="secondLevelText-'+id+'" rows="3" style="resize: none">' +
+                    '</textarea>' +
+                    '<input class="btn btn-default float-R" type="submit" onclick="uploadSecondLevelajax('+id+')" value="提交">'+
+                    '</div>';
+                addLi+='<li class="media">'+
+                    '<div class="media-left">'+
+                    '<img class="img-rounded media-ob" src="https://cn.vuejs.org/images/logo.png" alt="..."></div>'+
+                    '<div class="media-body">'+
+'<a><h4 class="media-heading">'+result.userList[index].name+':</h4></a>'+
+'<p>'+result.paginationDTO.quesstionList[index].description+'</p>'+
+'<div>'+
+    '<a class="glyphicon glyphicon-thumbs-up text-color-999">点赞&nbsp;</a>'+
+    '<a class="glyphicon glyphicon-comment text-color-999" onclick=cliComment('+result.paginationDTO.quesstionList[index].id+')>回复</a>'+
+    '<div class="collapse" id="comment-'+result.paginationDTO.quesstionList[index].id+'">' +
+        secondLevelBox+
+        '</div>'+
+    '</div></div></li>'+
+'<hr>';
+});
+$("#reply:last-child").append(addLi);
+}
+}
+// 点击页码
+function paginationClick(page) {
+var questionId =  $("#titleId").attr("name");
+$("#reply").empty();
+$.ajax({
+url:"/replyInfo",
+type:"get",
+dataType:"json",
+data:{"questionId":questionId,"page":page},
+success:function (result) {
+fragmentReply(result);
+paginationProduction(result.paginationDTO,"#reply",null);
+}
+});
+}
+//二级评论
+function cliComment(id) {
+var twoLevel = $("#comment-"+id);
+if(twoLevel.attr("class")=="collapse"){
+twoLevel.addClass("in");
+iniSecondlevel(id);
+console.log("执行iniSecondlevel");
+
+
+}else {
+twoLevel.removeClass("in")
+}
+}
+//二级评论信息添加
+function uploadSecondLevelajax(id) {
+    var questionId =  $("#titleId").attr("name");
+    var desc = $("#secondLevelText-"+id).val();
+    $.ajax({
+        url:"/reply",
+        dataType:"json",
+        data:{
+            "token":coo,
+            "questionId":questionId,
+            "description":desc,
+            "replyParmentId":id
+        },
+        success:function (result) {
+            fragmentsecondLevel(result,id);
+
+        }
+    })
+}
+function iniSecondlevel(id) {
+    var questionId =  $("#titleId").attr("name");
+    console.log("执行iniSecondlevel的回调");
+    $.ajax({
+        url:"/iniSecondlevel",
+        dataType:"json",
+        data:{
+            "questionId":questionId,
+            "replyParentId":id,
+        },
+        success:function (result) {
+            $.each(result,function (index,obj) {
+                fragmentsecondLevel(obj,id);
+            })
+        }
+    })
+}
+//二级评论信息div
+function fragmentsecondLevel(result,id) {
+    var addLi ='';
+    addLi+='<li class="media">'+
+        '<div class="media-left">'+
+        '<img class="img-rounded media-ob" src="https://cn.vuejs.org/images/logo.png" alt="..."></div>'+
+        '<div class="media-body">'+
+        '<a><h4 class="media-heading">'+result.user.name+':</h4></a>'+
+        '<p>'+result.reply.description+'</p>'+
+        '<div>'+
+        '</div></div></li>'+
+        '<hr>';
+    console.log("执行了拼接");
+    $("#secondLevelText-"+id).before(addLi);
+}
+</script>
+<!--jqurey end-->
+
+</body>
+</html>

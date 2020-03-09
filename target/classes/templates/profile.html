@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的话题</title>
+    <link href="http://localhost:8080/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8080/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="http://localhost:8080/js/jquery-3.4.1.min.js"></script>
+    <script src="http://localhost:8080/js/cookie.js"></script>
+    <script src="http://localhost:8080/js/bootstrap.min.js" ></script>
+    <link href="http://localhost:8080/css/local.css" rel="stylesheet">
+</head>
+<body>
+<div th:include="navgation :: nav"></div>
+<div class="main">
+    <div class="row">
+        <div class="col-lg-9" >
+            <div style="border-top: 4px solid #5e5e5e;" id="ok">
+                <h2 class="glyphicon glyphicon-list">我的问题</h2>
+            </div>
+        </div >
+        <div class="col-lg-3" style="border-left:1px solid #0f0f0f;height: 300px;">
+            <div class="list-group">
+                <a href="#" class="list-group-item active" name="Myquestion">我的问题</a>
+                <a href="#" class="list-group-item" name="reply">最新回复</a>
+                <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                <a href="#" class="list-group-item">Vestibulum at eros</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var label=null;
+    var attrName = null;
+    var token = $.cookie('token');
+    var currentPage=1;
+    $(function () {
+        $.ajax({
+            url:"/QuestionList",
+            type:"post",
+            dataType:"json",
+            data:{"name":attrName,"token":token,"currentPage":currentPage},
+            success:function (result) {
+                fragmentDiv(result);
+                console.log("选择标签数据进行异步数据传输")
+            }
+        });
+
+    });
+
+
+    // 选择标签数据进行异步数据传输
+    function activeLabel() {
+       $(".list-group-item").click(function () {
+           label = this.text;
+           attrName = $(this).prop("name");
+           $(".glyphicon.glyphicon-list").attr("name",attrName);
+           $(".glyphicon.glyphicon-list").html(label);
+           $(".list-group-item.active").attr("class","list-group-item");
+           $(this).addClass("active");
+           $.ajax({
+               url:"/QuestionList",
+               type:"post",
+               dataType:"json",
+               data:{"name":attrName,"token":token,"currentPage":currentPage},
+               success:function (result) {
+                   fragmentDiv(result);
+                   console.log("选择标签数据进行异步数据传输")
+               }
+           });
+       });
+
+    }
+    //页面展示工具类
+    function  fragmentDiv(result) {
+        var pageSize="";
+        $(".media.spacing-line").remove();
+        $(".pagination").remove();
+        profile = '';
+        var quesstionList = result.quesstionList;
+        $.each(quesstionList,function (index,obj) {
+            console.log(obj.user.avatarUrl);
+            profile+='<div class="media spacing-line">'+
+                '<div class="media-left">'+
+                ' <a href="#">'+
+                '<img class="img-rounded media-ob" style="width: 44px" src='+obj.user.avatarUrl+' alt="..."></a> </div>'+
+                '<div class="media-body">'+
+                '<h3 class="media-heading"><a href="http://localhost:8080/question/'+obj.id+'">'+obj.title+'</a></h3>'+
+                '<span>'+obj.description+'</span></br>'+
+                '<span class="font-text" style="color: #777777">'+
+                '<span>'+obj.commentCont+'</span>个回复 |'+
+                '<span>'+obj.viewCount+'</span>次浏览</span></div></div>'
+        });
+        var aEle = "";
+        $.each(result,function (i) {
+            if(i=="quesstionList"){
+                aEle+="quesstionList";
+                console.log(aEle)
+            }
+        })
+        //分页栏
+        $.each(result.pages,function (index,obj) {
+            pageSize+='<li>'+
+                '<a href="javascript:;" onclick="paginationClick('+(index+1)+')" name='+aEle+'>'+(index+1)+'</a></li>';
+            console.log(aEle)
+        });
+        var showPreviousFT="";
+        if(!result.showPrevious){
+            showPreviousFT+= '<li>'+
+                             '<a href="#" aria-label="Previous">'+
+                             '<span aria-hidden="true" >&laquo;</span></a></li>';
+        }
+        var showAfterFT=""
+        if(!result.showAfter){
+            showAfterFT+='<li>'+
+                '<a href="#" aria-label="Next" id="Aeli">'+
+                '<span aria-hidden="true">&raquo;</span></a></li>'
+        }
+        profile+='<div><nav aria-label="Page navigation">'+
+                '<ul class="pagination">'+showPreviousFT+
+                ' <li>'+pageSize+showAfterFT+
+                '</ul></nav>'
+        $("#ok").append(profile);
+    }
+    //点击页码
+    function paginationClick(pageSize) {
+           var attr =  $(".glyphicon.glyphicon-list").attr("name");
+            $.ajax({
+                url:"QuestionList",
+                type:"post",
+                dataType:"json",
+                data:{"name":attrName,"token":token,"page":pageSize},
+                success:function (result) {
+                    fragmentDiv(result);
+                }
+            });
+    }
+
+</script>
+</body>
+</html>
