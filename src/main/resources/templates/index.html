@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/bootstrap.min.js" ></script>
+    <link href="css/local.css" rel="stylesheet">
+</head>
+<body>
+<div th:include="navgation :: nav"></div>
+
+<div class="main">
+    <div class="row bgc-white">
+        <div class="col-lg-9" >
+            <div>
+                <h2><span class="glyphicon glyphicon-list"></span>发现</h2>
+            </div>
+            <div class="media spacing-line" th:each="question : ${pagination.quesstionList}">
+                <div class="media-left">
+                    <a>
+                        <img class="img-rounded media-ob" style="width: 44px" th:src="${question.user.avatarUrl}" alt="...">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h3 class="media-heading">
+                        <a th:href="'http://localhost:8080/lcoal/'+${question.getId()}" th:text="${question.title}">我是你爸爸真伟大</a>
+                    </h3>
+                    <span th:text="${question.description}"></span></br>
+                    <span class="font-text" style="color: #777777">
+                        <span th:text="${question.commentCont}"></span>个回复 |
+                        <span th:text="${question.viewCount}"></span>次浏览
+                    </span>
+                </div>
+            </div>
+            <div th:include="pagination :: pagination"/>
+        </div >
+        <div class="col-lg-3" style="border-left:1px solid #0f0f0f;height: 300px;">
+            <div>
+                <h2><span class="glyphicon"></span>热门话题</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

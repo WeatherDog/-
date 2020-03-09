@@ -1,0 +1,22 @@
+2020-03-01 18:14:28.929  INFO 18184 --- [restartedMain] com.example.magjong.MagjongApplication   : Starting MagjongApplication on DESKTOP-9HJRLIB with PID 18184 (C:\Users\lei\Desktop\magjong\target\classes started by lei in C:\Users\lei\Desktop\magjong)
+2020-03-01 18:14:28.931  INFO 18184 --- [restartedMain] com.example.magjong.MagjongApplication   : No active profile set, falling back to default profiles: default
+2020-03-01 18:14:28.990  INFO 18184 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-03-01 18:14:28.996  INFO 18184 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-03-01 18:14:29.037  WARN 18184 --- [background-preinit] o.s.h.c.j.Jackson2ObjectMapperBuilder    : For Jackson Kotlin classes support please add "com.fasterxml.jackson.module:jackson-module-kotlin" to the classpath
+2020-03-01 18:14:29.942  INFO 18184 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+2020-03-01 18:14:29.973  INFO 18184 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 24ms. Found 0 JDBC repository interfaces.
+2020-03-01 18:14:30.382  INFO 18184 --- [restartedMain] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2020-03-01 18:14:30.825  INFO 18184 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-03-01 18:14:30.835  INFO 18184 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-03-01 18:14:30.836  INFO 18184 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.29]
+2020-03-01 18:14:30.838  INFO 18184 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : Loaded APR based Apache Tomcat Native library [1.2.23] using APR version [1.7.0].
+2020-03-01 18:14:30.839  INFO 18184 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true].
+2020-03-01 18:14:30.839  INFO 18184 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2020-03-01 18:14:30.843  INFO 18184 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : OpenSSL successfully initialized [OpenSSL 1.1.1c  28 May 2019]
+2020-03-01 18:14:31.015  INFO 18184 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-03-01 18:14:31.016  INFO 18184 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2018 ms
+2020-03-01 18:14:31.923  INFO 18184 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-03-01 18:14:32.049  INFO 18184 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page template: index
+2020-03-01 18:14:32.560  INFO 18184 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-03-01 18:14:32.647  INFO 18184 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-03-01 18:14:32.653  INFO 18184 --- [restartedMain] com.example.magjong.MagjongApplication   : Started MagjongApplication in 4.552 seconds (JVM running for 7.05)

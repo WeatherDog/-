@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>我的话题</title>
+    <link href="http://localhost:8080/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="http://localhost:8080/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="http://localhost:8080/js/jquery-3.4.1.min.js"></script>
+    <script src="http://localhost:8080/js/cookie.js"></script>
+    <script src="http://localhost:8080/js/bootstrap.min.js" ></script>
+    <script src="http://localhost:8080/js/common.js"></script>
+    <link href="http://localhost:8080/css/local.css" rel="stylesheet">
+    <script src="//unpkg.com/wangeditor/release/wangEditor.min.js"></script>
+</head>
+<body>
+<div th:include="navgation :: nav"></div>
+<div class="main" style="float: left">
+    <div class="bgc-white">
+        <div class="row height100">
+            <div class="col-lg-9 question-padding" id="serch_media">
+                <!--                    文章开始-->
+
+            </div >
+            <div class="col-lg-3" style="border-left:1px solid #0f0f0f;height: 300px;" id = "right">
+                <div class="media font-contor">
+                    <div class="media-body">
+                        <img style="height: 266px" src="http://keke.cn-bj.ufileos.com/20200304.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js">
+</script>
+<script th:inline="javascript">
+    $(function () {
+        var tf = [[${serachInfo}]];
+        if (tf.pages.length==0){
+            serachError("serch_media");
+        }else {
+            fragmentDiv(tf);
+            paginationProduction(tf,"#serch_media",serachKey);
+        }
+    })
+    function  fragmentDiv(result) {
+        var serachKey = [[${serachKey}]];
+        console.log('serachKey='+serachKey);
+        $("#serachKey").val(serachKey);
+        console.log(result)
+        console.log("result.quesstionList="+result.quesstionList);
+        var pageSize="";
+        $(".media.spacing-line").remove();
+        $(".pagination").remove();
+        profile = '';
+        var quesstionList = result.quesstionList;
+        $.each(quesstionList,function (index,obj) {
+            console.log("obj.userSrc="+obj);
+            profile+='<div class="media spacing-line">'+
+                '<div class="media-left">'+
+                ' <a href="#">'+
+                '<img class="img-rounded media-ob" style="width: 44px" src='+obj.userSrc+' alt="..."></a> </div>'+
+                '<div class="media-body">'+
+                '<h3 class="media-heading"><a href="http://localhost:8080/question/'+obj.id+'">'+obj.questionTitle+'</a></h3>'+
+                '<span class="font-text" style="color: #777777">'+
+                '<span>'+obj.questionCommentCont+'</span>个回复 |'+
+                '</span></div></div>'
+        });
+        var aEle = "";
+        //分页栏
+        $("#serch_media").append(profile);
+    }
+    function paginationClick(page){
+        var serachKey = $("#serachKey").val();
+        $.ajax({
+            url:"/serachPagination",
+            type:"get",
+            dataType:"json",
+            data:{"serachKey":serachKey,"page":page},
+            success:function (result) {
+                fragmentDiv(result);
+                paginationProduction(result,"#serch_media",serachKey);
+            }
+        });
+    }
+    function serachError(tagId) {
+        errorImg='';
+        errorImg+='<div id="errorImge">'
+        errorImg+='<img style="display: block;margin: auto" src="css/symbols.png"/></div>'
+        $("#"+tagId).append(errorImg);
+    }
+</script>
+
+</body>
+</html>
