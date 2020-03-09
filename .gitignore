@@ -24,7 +24,7 @@
 hs_err_pid*
 =======
 HELP.md
-target/
+/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**
 !**/src/test/**
@@ -44,16 +44,6 @@ target/
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
-### VS Code ###
-.vscode/
->>>>>>> 2020-03-09 整体上传
+>>>>>>> 2020-03-10 整体上传
 ### Example user template
 /src/test/java/com/example/magjong/MagjongApplicationTests.java
